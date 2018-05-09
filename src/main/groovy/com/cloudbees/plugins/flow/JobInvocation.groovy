@@ -57,8 +57,8 @@ public class JobInvocation {
 
     private transient QueueTaskFuture<? extends AbstractBuild<?, ?>> future;
 
-    private final Lock lock;
-    private final Condition finalizedCond;
+    private transient Lock lock;
+    private transient Condition finalizedCond;
 
     // Whether the build has started. If true, this.build should be set.
     private boolean started;
@@ -174,6 +174,10 @@ public class JobInvocation {
     }
 
     /* package */ void buildFinalized() {
+        if (this.lock == null || this.finalizedCond == null) {
+            throw new RuntimeException("Can't mark finalized (deserialized?).");
+        }
+
         this.lock.lock();
         try {
             this.finalized = true;
@@ -258,6 +262,10 @@ public class JobInvocation {
 
     public void waitForFinalization() throws ExecutionException, InterruptedException {
         if (!finalized) {
+            if (this.lock == null || this.finalizedCond == null) {
+                throw new RuntimeException("Can't wait for finalization (deserialized?).");
+            }
+
             this.lock.lock();
             try {
                 this.finalizedCond.await();
