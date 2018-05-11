@@ -31,7 +31,7 @@ package com.cloudbees.plugins.flow;
 
 /**
  *
- * @author Julia S.Simon <julia@tuenti.com>
+ * @author <a href="mailto:julia@tuenti.com">Julia S.Simon</a>
  */
 class CouldNotScheduleJobException extends RuntimeException {
 
