@@ -107,8 +107,9 @@ public class FlowDSL {
         graph.vertexSet().each() { ji ->
             if (flowRun.project != ji.project) {
                 // Our project is the fist JobInvocation and we would just be aborting ourselves again.
-                println("aborting ${ji.name}")
-                ji.abort()
+                println("aborting ${ji.name}:")
+                def res = ji.abort()
+                println("aborting result: ${res}")
             }
         }
         // wait until all the downstream builds have aborted.

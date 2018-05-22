@@ -110,6 +110,7 @@ public class JobInvocation {
     /* package */ boolean abort() {
         def aborted = false
         if (!started) {
+            println("abort: not started yet")
             // Need to search the queue for the correct job and cancel it in
             // the queue.
             def queue = Jenkins.instance.queue
@@ -121,13 +122,16 @@ public class JobInvocation {
             }
         }
         else if (!completed) {
+            println("abort: started and not completed")
             // as the task has already started we want to be kinder in recording the cause.
             def cause = new FlowAbortedCause(flowRun);
             def executor = build.executor ?: build.oneOffExecutor;
             if (executor != null) {
                 executor.interrupt(Result.ABORTED, cause)
                 aborted = true;
-             }
+            } else {
+                println("abort: no executor")
+            }
         }
         return aborted;
     }
