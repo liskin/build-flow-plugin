@@ -60,6 +60,9 @@ class AbortTest extends DSLTestCase {
 		while (!job1.building) {
 			Thread.sleep(10L)
 		}
+		// wait for job1's JobInvocation to notice the job has started and for
+		// the job to acquire an executor
+		Thread.sleep(100L)
 		println("job has started")
 
 		// abort the flow
@@ -100,11 +103,14 @@ class AbortTest extends DSLTestCase {
 		""")
 
 		def flow = future.waitForStart()
-		// wait for job1 to start
-		while (!job1.building) {
+		// wait for jobs to start
+		while (!job1.building || !job2.building) {
 			Thread.sleep(10L)
 		}
-		println("job has started")
+		// wait for jobs' JobInvocations to notice the jobs have started and for
+		// the jobs to acquire executors
+		Thread.sleep(100L)
+		println("jobs have started")
 
 		// abort the flow
 		println("aborting...")
@@ -145,11 +151,14 @@ class AbortTest extends DSLTestCase {
 		""")
 
 		def flow = future.waitForStart()
-		// wait for job1 to start
-		while (!job1.building) {
+		// wait for jobs to start
+		while (!job1.building || !job2.building) {
 			Thread.sleep(10L)
 		}
-		println("job has started")
+		// wait for jobs' JobInvocations to notice the jobs have started and for
+		// the jobs to acquire executors
+		Thread.sleep(100L)
+		println("jobs have started")
 
 		// abort the flow
 		println("aborting...")
